@@ -36,7 +36,7 @@ public class Topic_01_DataType {
     String[] studentName = {"Tô Trinh", "Tô Trinh 1", "Tô Trinh 2"};
     int[] studentAge = {20,22, 28};
 
-    // Kiểu Object )đại diện cho các kiểu dữ liệu khác)
+    // Kiểu Object đại diện cho các kiểu dữ liệu khác)
     // Đối tượng => Chuyển đổi qua các dữ liệu khác
     Object studentAddress = "123 location";
     Object employeeAge = 28;
