@@ -72,6 +72,118 @@ public class Topic_10_Textbox_TextArea {
 
     }
 
+    @Test
+    public void TC_02_OrangeHM() throws InterruptedException {
+        driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+
+        //Khai báo các biến dùng nhiều lần
+        String firstName = "Trinh";
+        String lastName = "Tô";
+        String userName = "Tô Trinh" + new Random().nextInt(9999);
+        String password = "Tt@123456";
+        String passportNumber = "123-123-123";
+        String passportComment = "abcd\n" + "efgh";
+
+        // Loading: Nếu vẫn còn loading thì dữ liệu chưa được load xong
+        // Login Admmin/ admin123
+        driver.findElement(By.cssSelector("input[name='username']")).sendKeys("Admin");
+        driver.findElement(By.cssSelector("input[name='password'")).sendKeys("admin123");
+        driver.findElement(By.xpath("//button[contains(string(), 'Login')]")).click();
+        Thread.sleep(5000);
+
+        // Mở trang PIM
+        //span[text()='PIM']/parent::a : tăng vào click vào thẻ span
+        driver.findElement(By.xpath("//span[text()='PIM']")).click();
+        Thread.sleep(3000);
+        // Mở trang Add employee
+        driver.findElement(By.xpath("//a[text()='Add Employee']")).click();
+        Thread.sleep(5000);
+        // Nhập thông tin hợp lệ vào textbox FirstName/ LastName
+        driver.findElement(By.cssSelector("input[name='firstName']")).sendKeys(firstName);
+        driver.findElement(By.cssSelector("input[name='lastName'")).sendKeys(lastName);
+
+        // lấy thông tin employee ID
+        String employeeID = driver.findElement
+                        (By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getAttribute("value");
+
+        //Click create login detail
+        driver.findElement(By.xpath("//p[text()='Create Login Details']/following-sibling::div/label")).click();
+
+
+        //Nhập thông tin vào username/password/confirm password
+        driver.findElement(By.xpath("//label[text()='Username']/parent::div/following-sibling::div/input")).sendKeys(userName);
+        driver.findElement(By.xpath("//label[text()='Password']/parent::div/following-sibling::div/input")).sendKeys(password);
+        driver.findElement(By.xpath("//label[text()='Confirm Password']/parent::div/following-sibling::div/input")).sendKeys(password);
+
+        // Click Save button
+        driver.findElement(By.xpath("//button[contains(string(),'Save')]")).click();
+        Thread.sleep(8000);
+
+        // Verify dữ liệu đã nhập ở Add Employee đúng với personal detail đã nhập
+            // input[name='firstName'] -> dùng assertEqual.getAtribute()
+        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='firstName']")).getAttribute("value"), firstName );
+        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='lastName']")).getAttribute("value"), lastName );
+        Assert.assertEquals(driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getAttribute("value"), employeeID );
+
+        // Click vào tab Immigration
+        driver.findElement(By.xpath("//a[text()='Immigration']")).click();
+
+        // Click Add tại Assigned Immigration Records
+        driver.findElement(By.xpath("//h6[text()='Assigned Immigration Records']/following-sibling::button[contains(string(),'Add')]")).click();
+
+        //Nhập dữ liệu vào Number/ Comments và click Save
+            //label[text()='Number']/parent::div/following-sibling::div/input
+        driver.findElement(By.xpath("//label[text()='Number']/parent::div/following-sibling::div/input")).sendKeys(passportNumber);
+        driver.findElement(By.xpath("//label[text()='Comments']/parent::div/following-sibling::div/textarea")).sendKeys(passportComment);
+        driver.findElement(By.xpath("//button[contains(string(),'Save')]")).click();
+
+        // Click vào icon Pencil (edit)
+        driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
+        Thread.sleep(5000);
+        // Verify dữ liệu đã tạo hiển thị đúng
+            // AssertEquals -> getAttribute
+        Assert.assertEquals(driver.findElement(By.xpath(
+                "//label[text()='Number']/parent::div/following-sibling::div/input")).getAttribute("value"), passportNumber);
+        Assert.assertEquals(driver.findElement(By.xpath(
+                "//label[text()='Comments']/parent::div/following-sibling::div/textarea")).getAttribute("value"), passportComment);
+
+        // Click vào tên User và chọn Logout
+            //p.oxd-userdropdown-icon
+        driver.findElement(By.cssSelector("p.oxd-userdropdown-name")).click();
+        driver.findElement(By.xpath("//a[text()='Logout']")).click();
+        Thread.sleep(5000);
+        // Login again
+        driver.findElement(By.cssSelector("input[name='username']")).sendKeys(userName);
+        driver.findElement(By.cssSelector("input[name='password'")).sendKeys(password);
+        driver.findElement(By.xpath("//button[contains(string(), 'Login')]")).click();
+        Thread.sleep(5000);
+        // Vào màn hình My Info
+        driver.findElement(By.xpath("//span[text()='My Info']")).click();
+        Thread.sleep(5000);
+        //Verify thông tin đúng FirstName/LastName/EmployeeID
+        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='firstName']")).getAttribute("value"), firstName );
+        Assert.assertEquals(driver.findElement(By.cssSelector("input[name='lastName']")).getAttribute("value"), lastName );
+        Assert.assertEquals(driver.findElement(By.xpath(
+                "//label[text()='Employee Id']/parent::div/following-sibling::div/input")).getAttribute("value"), employeeID );
+        // Kiểm tra employeeID disable -> dùng assertFalse
+        Assert.assertFalse(driver.findElement(By.xpath("//label[text()='Employee Id']/parent::div/following-sibling::div/input")).isEnabled());
+
+        //Vào Immigration -> click Edit (pencil)
+        driver.findElement(By.xpath("//a[text()='Immigration']")).click();
+        Thread.sleep(3000);
+
+        // Click vào icon Pencil (edit)
+        driver.findElement(By.cssSelector("i.bi-pencil-fill")).click();
+        Thread.sleep(5000);
+
+        // Verify thông tin hiển thị đúng
+        Assert.assertEquals(driver.findElement(By.xpath(
+                "//label[text()='Number']/parent::div/following-sibling::div/input")).getAttribute("value"), passportNumber);
+        Assert.assertEquals(driver.findElement(By.xpath(
+                "//label[text()='Comments']/parent::div/following-sibling::div/textarea")).getAttribute("value"), passportComment);
+
+    }
+
     @AfterClass
     public  void afterClass(){
       driver.quit();
